@@ -137,10 +137,14 @@ app/src/main/java/com/willy/mynote/
 
 ## Cara Menjalankan
 
-1. Clone repository ini dan buka dengan **Android Studio** (disarankan versi yang mendukung Kotlin 2.2.x dan AGP 9.x).
+1. Clone repository ini:
+   ```bash
+   git clone https://github.com/willyrafaelfs/Pemrograman-Mobile-My-Note.git
+   ```
+   Lalu buka dengan **Android Studio** (disarankan versi yang mendukung Kotlin 2.2.x dan AGP 9.x).
 2. Biarkan Gradle sync mengunduh dependency (Compose BOM, Navigation Compose, dsb).
 3. Jalankan konfigurasi `app` pada emulator atau perangkat fisik dengan Android **8.0 (API 26)** ke atas.
 4. Atau lewat terminal:
-   ```
+   ```bash
    ./gradlew :app:installDebug
    ```
