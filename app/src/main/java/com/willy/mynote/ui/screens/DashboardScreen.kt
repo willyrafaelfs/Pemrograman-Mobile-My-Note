@@ -1,5 +1,7 @@
 package com.willy.mynote.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,6 +28,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +54,10 @@ fun DashboardScreen(
     // collectAsStateWithLifecycle() lebih hemat daripada collectAsState():
     // ia berhenti mengoleksi saat aplikasi di background.
     val notes by viewModel.notes.collectAsStateWithLifecycle()
+
+    // Catatan yang sedang menunggu konfirmasi hapus (long-press kartu).
+    // null berarti tidak ada dialog yang tampil.
+    var noteToDelete by remember { mutableStateOf<Note?>(null) }
 
     Scaffold(
         topBar = {
@@ -106,11 +115,25 @@ fun DashboardScreen(
                     NoteCard(
                         note = note,
                         onClick = { onNoteClick(note.id) },
-                        onTogglePin = { viewModel.togglePin(note.id) }
+                        onTogglePin = { viewModel.togglePin(note.id) },
+                        onLongClick = { noteToDelete = note }
                     )
                 }
             }
         }
+    }
+
+    // Dialog konfirmasi muncul di atas layar apa pun saat ada catatan
+    // yang menunggu keputusan hapus.
+    noteToDelete?.let { note ->
+        DeleteNoteDialog(
+            noteContent = note.content,
+            onConfirm = {
+                viewModel.deleteNote(note.id)
+                noteToDelete = null
+            },
+            onDismiss = { noteToDelete = null }
+        )
     }
 }
 
@@ -118,15 +141,21 @@ fun DashboardScreen(
  * Komponen kartu catatan — dipisah agar REUSABLE dan mudah di-preview.
  * Analogi: satu keping LEGO yang bisa dipasang di mana saja.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun NoteCard(
     note: Note,
     onClick: () -> Unit,
-    onTogglePin: () -> Unit
+    onTogglePin: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     Card(
-        onClick = onClick, // Card Material 3 sudah mendukung onClick + efek ripple
-        modifier = Modifier.fillMaxWidth(),
+        // combinedClickable membedakan tap biasa (buka editor) dari
+        // long-press (minta konfirmasi hapus) — Card.onClick bawaan
+        // tidak punya slot untuk long-press.
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick),
         colors = CardDefaults.cardColors(
             // Warna kartu mengikuti pilihan user per catatan, bukan warna tetap —
             // ini yang membuat tiap catatan bisa berbeda seperti sticky note asli.

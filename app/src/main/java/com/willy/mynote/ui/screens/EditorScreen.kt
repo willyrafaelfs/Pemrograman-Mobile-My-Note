@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +32,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -78,6 +80,9 @@ fun EditorScreen(
     val notes by viewModel.notes.collectAsStateWithLifecycle()
     val isPinned = notes.find { it.id == noteId }?.isPinned ?: false
 
+    // Menunggu konfirmasi hapus — hanya relevan untuk catatan yang sudah ada.
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -102,6 +107,9 @@ fun EditorScreen(
                                 imageVector = if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
                                 contentDescription = if (isPinned) "Lepas pin" else "Pin catatan ini"
                             )
+                        }
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(Icons.Filled.Delete, contentDescription = "Hapus catatan")
                         }
                     }
                     // Tombol SIMPAN (✓) di pojok kanan atas — pola umum
@@ -180,6 +188,18 @@ fun EditorScreen(
                 )
             )
         }
+    }
+
+    if (showDeleteDialog) {
+        DeleteNoteDialog(
+            noteContent = textContent,
+            onConfirm = {
+                viewModel.deleteNote(noteId)
+                showDeleteDialog = false
+                onNavigateBack()
+            },
+            onDismiss = { showDeleteDialog = false }
+        )
     }
 }
 
