@@ -10,6 +10,16 @@ Aplikasi catatan sederhana ala sticky note yang dibangun dengan **Jetpack Compos
 - **Mata Kuliah:** Pemrograman Mobile
 - **Instansi:** Universitas Merdeka Malang
 
+## Daftar Isi
+
+- [Identitas Mahasiswa](#identitas-mahasiswa)
+- [Screenshots](#screenshots)
+- [Fitur](#fitur)
+- [Arsitektur](#arsitektur)
+- [Tech Stack](#tech-stack)
+- [Struktur Proyek](#struktur-proyek)
+- [Cara Menjalankan](#cara-menjalankan)
+
 ## Screenshots
 
 Semua screenshot diambil langsung dari emulator saat pengujian fitur.
@@ -50,16 +60,6 @@ Semua screenshot diambil langsung dari emulator saat pengujian fitur.
     </tr>
   </tbody>
 </table>
-
-## Daftar Isi
-
-- [Identitas Mahasiswa](#identitas-mahasiswa)
-- [Screenshots](#screenshots)
-- [Fitur](#fitur)
-- [Arsitektur](#arsitektur)
-- [Tech Stack](#tech-stack)
-- [Struktur Proyek](#struktur-proyek)
-- [Cara Menjalankan](#cara-menjalankan)
 
 ## Fitur
 
