@@ -3,6 +3,7 @@ package com.willy.mynote.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,11 +11,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.PushPin
+import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,10 +33,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.willy.mynote.model.Note
+import com.willy.mynote.ui.theme.toCardColor
 import com.willy.mynote.viewmodel.NoteViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,7 +103,11 @@ fun DashboardScreen(
                                               // membantu Compose melacak item saat
                                               // list berubah → animasi & performa lebih baik
                 ) { note ->
-                    NoteCard(note = note, onClick = { onNoteClick(note.id) })
+                    NoteCard(
+                        note = note,
+                        onClick = { onNoteClick(note.id) },
+                        onTogglePin = { viewModel.togglePin(note.id) }
+                    )
                 }
             }
         }
@@ -115,34 +121,60 @@ fun DashboardScreen(
 @Composable
 private fun NoteCard(
     note: Note,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onTogglePin: () -> Unit
 ) {
     Card(
         onClick = onClick, // Card Material 3 sudah mendukung onClick + efek ripple
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            // Warna kartu mengikuti pilihan user per catatan, bukan warna tetap —
+            // ini yang membuat tiap catatan bisa berbeda seperti sticky note asli.
+            containerColor = note.color.toCardColor()
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Text(
-            text = note.content,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            maxLines = 3,                       // Cukup cuplikan 3 baris di dashboard
-            overflow = TextOverflow.Ellipsis    // Sisa teks diganti "..."
+        // Catatan yang di-pin diberi elevasi lebih tinggi agar terasa "diangkat"
+        // dari tumpukan, memperkuat kesan ia sengaja ditandai penting.
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (note.isPinned) 6.dp else 2.dp
         )
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = note.content,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp, top = 16.dp),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 3,                       // Cukup cuplikan 3 baris di dashboard
+                overflow = TextOverflow.Ellipsis    // Sisa teks diganti "..."
+            )
+            IconButton(onClick = onTogglePin) {
+                Icon(
+                    imageVector = if (note.isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                    contentDescription = if (note.isPinned) "Lepas pin" else "Pin catatan ini",
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = if (note.isPinned) 1f else 0.5f)
+                )
+            }
+        }
         Text(
-            text = "Diperbarui: ${formatTanggal(note.updatedAt)}",
-            modifier = Modifier.padding(16.dp),
+            text = buildTimestampLabel(note),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         )
     }
 }
 
-/** Util kecil untuk memformat timestamp menjadi teks ramah pengguna. */
-private fun formatTanggal(millis: Long): String {
-    val formatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
-    return formatter.format(Date(millis))
+/**
+ * Menampilkan kapan catatan dibuat, dan jika sudah pernah diedit,
+ * juga kapan terakhir diperbarui — agar user tahu riwayat catatannya.
+ */
+private fun buildTimestampLabel(note: Note): String {
+    val dibuat = "Dibuat: ${formatTanggal(note.createdAt)}"
+    return if (note.updatedAt == note.createdAt) {
+        dibuat
+    } else {
+        "$dibuat • Diperbarui: ${formatTanggal(note.updatedAt)}"
+    }
 }

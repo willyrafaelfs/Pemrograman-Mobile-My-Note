@@ -14,5 +14,8 @@ package com.willy.mynote.model
 data class Note(
     val id: Long,                 // Identitas unik — kunci untuk fitur edit
     val content: String,          // Isi catatan yang ditulis pengguna
-    val updatedAt: Long = System.currentTimeMillis() // Kapan terakhir diubah
+    val color: NoteColor = NoteColor.YELLOW, // Warna kartu, seperti sticky note fisik
+    val isPinned: Boolean = false,           // Pin-up: tampil di urutan teratas
+    val createdAt: Long = System.currentTimeMillis(), // Kapan catatan pertama kali dibuat
+    val updatedAt: Long = System.currentTimeMillis()  // Kapan terakhir diubah
 )

@@ -8,4 +8,12 @@
     <color name="note_background">#FFF8E1</color>      <!-- latar layar -->
     <color name="note_secondary_container">#FFF176</color> <!-- kuning muda: kartu catatan -->
     <color name="note_on_secondary_container">#33691E</color>
+
+    <!-- Palet warna kartu catatan — dipilih bebas oleh user per catatan, ala sticky note fisik -->
+    <color name="note_card_yellow">#FFF9C4</color>
+    <color name="note_card_pink">#F8BBD0</color>
+    <color name="note_card_blue">#B3E5FC</color>
+    <color name="note_card_green">#C8E6C9</color>
+    <color name="note_card_purple">#E1BEE7</color>
+    <color name="note_card_orange">#FFCCBC</color>
 </resources>
