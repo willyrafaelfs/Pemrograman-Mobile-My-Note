@@ -58,6 +58,11 @@ Semua screenshot diambil langsung dari emulator saat pengujian fitur.
       <td><img src="screenshots/05-konfirmasi-hapus.png" width="220" alt="Dialog konfirmasi hapus"></td>
       <td><strong>Dialog Konfirmasi Hapus.</strong><br>Muncul setelah long-press pada kartu di Dashboard (atau menekan ikon hapus di Editor). Menampilkan cuplikan isi catatan yang akan dihapus, dengan opsi "Batal" atau "Hapus" agar penghapusan tidak terjadi tanpa sengaja.</td>
     </tr>
+    <tr>
+      <td>6</td>
+      <td><img src="screenshots/06-tentang-aplikasi.png" width="220" alt="Layar Tentang Aplikasi"></td>
+      <td><strong>Tentang Aplikasi.</strong><br>Layar statis berisi identitas pembuat aplikasi, diakses lewat ikon info (ⓘ) di topbar Dashboard.</td>
+    </tr>
   </tbody>
 </table>
 
