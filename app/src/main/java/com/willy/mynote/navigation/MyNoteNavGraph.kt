@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.willy.mynote.ui.screens.AboutScreen
 import com.willy.mynote.ui.screens.DashboardScreen
 import com.willy.mynote.ui.screens.EditorScreen
 import com.willy.mynote.viewmodel.NoteViewModel
@@ -39,11 +40,21 @@ fun MyNoteNavGraph() {
                 },
                 onNoteClick = { noteId ->
                     navController.navigate(Screen.Editor.buildRoute(noteId))
+                },
+                onAboutClick = {
+                    navController.navigate(Screen.About.route)
                 }
             )
         }
 
-        // ── Layar 2: Editor (Create & Edit) ────────────────────────────
+        // ── Layar 2: About (Tentang Aplikasi) ──────────────────────────
+        composable(route = Screen.About.route) {
+            AboutScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        // ── Layar 3: Editor (Create & Edit) ────────────────────────────
         composable(
             route = Screen.Editor.route,
             arguments = listOf(

@@ -13,6 +13,9 @@ sealed class Screen(val route: String) {
 
     data object Dashboard : Screen("dashboard")
 
+    /** Layar statis berisi informasi pembuat aplikasi. */
+    data object About : Screen("about")
+
     /**
      * Rute editor memakai OPTIONAL ARGUMENT (tanda "?"):
      * - "editor?noteId=-1" → mode CREATE (buat catatan baru)

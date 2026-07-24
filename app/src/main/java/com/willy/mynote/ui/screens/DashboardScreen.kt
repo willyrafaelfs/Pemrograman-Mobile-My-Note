@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.Card
@@ -46,7 +47,8 @@ import com.willy.mynote.viewmodel.NoteViewModel
 fun DashboardScreen(
     viewModel: NoteViewModel,
     onAddNote: () -> Unit,
-    onNoteClick: (Long) -> Unit
+    onNoteClick: (Long) -> Unit,
+    onAboutClick: () -> Unit
 ) {
     // "Berlangganan" ke StateFlow. Setiap kali daftar catatan berubah
     // di ViewModel, variabel `notes` diperbarui → Compose otomatis
@@ -63,9 +65,18 @@ fun DashboardScreen(
         topBar = {
             TopAppBar(
                 title = { Text("MyNote 📝", fontWeight = FontWeight.Bold) },
+                actions = {
+                    IconButton(onClick = onAboutClick) {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = "Tentang Aplikasi"
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
